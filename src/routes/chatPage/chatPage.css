@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 
     .wrapper{
         flex: 1;
@@ -28,4 +29,8 @@
             }
         }
     }
+}
+
+.endChat{
+    padding-bottom: 100px;
 }
