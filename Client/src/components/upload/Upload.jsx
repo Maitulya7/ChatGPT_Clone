@@ -23,7 +23,7 @@ const authenticator = async () => {
   }
 };
 
-const Upload = ({setImg}) => {
+const Upload = ({ setImg }) => {
   const ikUPloadRef = useRef(null);
   const onError = (err) => {
     console.log("Error", err);
@@ -31,7 +31,7 @@ const Upload = ({setImg}) => {
 
   const onSuccess = (res) => {
     console.log("Success", res);
-    setImg((PREV)=>({...PREV, isLoading:false, dbData:res}))
+    setImg((PREV) => ({ ...PREV, isLoading: false, dbData: res }));
   };
 
   const onUploadProgress = (progress) => {
@@ -39,8 +39,22 @@ const Upload = ({setImg}) => {
   };
 
   const onUploadStart = (evt) => {
-    console.log("Start", evt);
-    setImg((PREV)=>({...PREV,isLoading:true}))
+    const file = evt.target.files[0];
+
+    const render = new FileReader();
+    render.onloadend = () => {
+      setImg((PREV) => ({
+        ...PREV,
+        isLoading: true,
+        aiData: {
+          inlineData: {
+            data: render.result.split(",")[1],
+            mimeType: file.type,
+          },
+        },
+      }));
+    };
+    render.readAsDataURL(file);
   };
   return (
     <IKContext
@@ -55,14 +69,12 @@ const Upload = ({setImg}) => {
         useUniqueFileName={true}
         onUploadProgress={onUploadProgress}
         onUploadStart={onUploadStart}
-        style={{display:'none'}}
+        style={{ display: "none" }}
         ref={ikUPloadRef}
       />
       {
-        <label 
-          onClick={()=>ikUPloadRef.current.click()}
-        >
-          <img src="/attachment.png" alt="file"/>
+        <label onClick={() => ikUPloadRef.current.click()}>
+          <img src="/attachment.png" alt="file" />
         </label>
       }
     </IKContext>
