@@ -55,6 +55,7 @@ const NewPrompt = () => {
       console.log("No text");
     }
     add(text);
+    
     e.target.text.value = "";
   };
 
