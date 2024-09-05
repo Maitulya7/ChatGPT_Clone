@@ -10,7 +10,7 @@ const ChatList = () => {
       res.json()
     )
   )
-
+  console.log(data)
 
   if (error) return 'An error has occurred: ' + error.message
 

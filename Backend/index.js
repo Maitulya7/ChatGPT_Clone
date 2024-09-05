@@ -104,6 +104,16 @@ app.get("/api/userChat", ClerkExpressRequireAuth(), async (req, res) => {
     res.status(500).send("Error creating chat");
   }
 });
+app.get("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
+  const userId = req.auth.userId;
+  try {
+    const chat = await Chat.find({_id:req.params.id, userId });
+    res.status(200).send(chat);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Error creating chat");
+  }
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
