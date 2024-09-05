@@ -1,7 +1,19 @@
 import { Link } from 'react-router-dom'
 import './chatList.css'
+import { useQuery } from 'react-query'
 
 const ChatList = () => {
+  const { isLoading, error, data } = useQuery('repoData', () =>
+    fetch(`${import.meta.env.VITE_API_URL}/api/userChat`,{
+      credentials: 'include',
+    }).then(res =>
+      res.json()
+    )
+  )
+
+
+  if (error) return 'An error has occurred: ' + error.message
+
   return (
     <div className='chatList'>
         <span className='title'>Dashboard</span>
@@ -11,17 +23,11 @@ const ChatList = () => {
         <hr />
         <span className='title'>Recent Chats</span>
         <div className="list">
-            <Link to="/">My chat list</Link>
-            <Link to="/">My chat list</Link>
-            <Link to="/">My chat list</Link>
-            <Link to="/">My chat list</Link>
-            <Link to="/">My chat list</Link>
-            <Link to="/">My chat list</Link>
-            <Link to="/">My chat list</Link>
-            <Link to="/">My chat list</Link>
-            <Link to="/">My chat list</Link>
-
-   
+           {isLoading ? "Loading..." : error ? "Something went wrong" :data?.map((chat)=>(
+            <Link key={chat._id} to={`/dashboard/chat/${chat._id}`}>
+                <span>{chat.title}</span>
+            </Link>
+           ))}
         </div>
         <hr />
         <div className="upgrade">
