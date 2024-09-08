@@ -15,26 +15,42 @@ const ChatPage = () => {
         credentials: "include",
       }).then((res) => res.json()),
   });
-
-console.log(data)
+  console.log(data)
 
   return (
     <div className="chatPage">
       <div className="wrapper">
         <div className="chat">
-          <div className="message">Text Message from AI</div>
           {isLoading
             ? "Loading..."
             : error
-            ? "Someting went wrong"
-            : data?.history?.map((message, id) => (
-                <div className={
-                  message.role === "user" ? "message user" : "message"
-                } key={id}>
-                  <Markdown>{message.parts[0].text}</Markdown>
-                </div>
+            ? "Something went wrong!"
+            : data[0]?.history?.map((message, i) => (
+                <>
+                  {message.img && (
+                    <IKImage
+                      urlEndpoint={import.meta.env.VITE_IMAGE_KIT_ENDPOINT}
+                      path={message.img}
+                      height="300"
+                      width="400"
+                      transformation={[{ height: 300, width: 400 }]}
+                      loading="lazy"
+                      lqip={{ active: true, quality: 20 }}
+                    />
+                  )}
+                  
+                  <div
+                    className={
+                      message.role === "user" ? "message user" : "message"
+                    }
+                    key={i}
+                  > 
+                    <>{message.parts[0].text}</>
+                  </div>
+                </>
               ))}
-          <NewPrompt />
+
+          {data && <NewPrompt data={data} />}
         </div>
       </div>
     </div>

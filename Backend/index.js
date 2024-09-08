@@ -56,7 +56,7 @@ app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res) => {
     const saveChat = await newChat.save();
 
     // check if userchat exists
-    const userChats = await userChat.findOne({ userId: userId });
+    const userChats = await UserChats.findOne({ userId: userId });
 
     // IF USERCHAT DOES NOT EXIST CREATE NEW ONE AND ADD CHAT
     if (!userChats) {
