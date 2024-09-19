@@ -104,14 +104,47 @@ app.get("/api/userChat", ClerkExpressRequireAuth(), async (req, res) => {
     res.status(500).send("Error creating chat");
   }
 });
+
 app.get("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
   const userId = req.auth.userId;
   try {
-    const chat = await Chat.find({_id:req.params.id, userId });
+    const chat = await Chat.find({ _id: req.params.id, userId });
     res.status(200).send(chat);
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Error creating chat");
+  }
+});
+
+app.put("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
+  const userId = req.auth.userId;
+
+  const { question, answer, img } = req.body;
+  console.log("this is answer", answer);
+  console.log("this is question", question);
+
+  const newItems = [
+    ...(question
+      ? [{ role: "user", parts: [{ text: question }], ...(img && { img }) }]
+      : []),
+    { role: "model", parts: [{ text: answer }] },
+  ];
+
+  try {
+    const updatedChat = await Chat.updateOne(
+      { _id: req.params.id, userId },
+      {
+        $push: {
+          history: {
+            $each: newItems,
+          },
+        },
+      }
+    );
+    res.status(200).send(updatedChat);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error adding conversation!");
   }
 });
 

@@ -1,20 +1,37 @@
 import "./dashboardPage.css";
 import { useAuth } from "@clerk/clerk-react";
+import { QueryClient, useMutation } from "react-query";
+import { useNavigation } from "react-router-dom";
 const DashboardPage = () => {
   const { userId } = useAuth();
+  const navigation = useNavigation();
+  const queryClient = new QueryClient();
+
+  const mutation = useMutation(
+    (text) => {
+      return fetch(`${import.meta.env.VITE_API_URL}/api/chats`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text, userId }),
+      }).then((res) => res.json());
+    },
+    {
+      onSuccess: (id) => {
+        queryClient.invalidateQueries("userChats");
+        navigation(`/dashboard/chats/${id}`);
+      },
+    }
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const text = e.target.text.value;
     if (!text) return;
-    await fetch("http://localhost:3001/api/chats", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text, userId }),
-    });
+
+    mutation.mutate(text);
   };
 
   return (

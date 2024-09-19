@@ -3,6 +3,8 @@ import NewPrompt from "../../components/newPrompt/NewPrompt";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import Markdown from "react-markdown";
+import { IKImage } from "imagekitio-react";
+import { useEffect } from "react";
 
 const ChatPage = () => {
   const path = useLocation().pathname;
@@ -15,7 +17,9 @@ const ChatPage = () => {
         credentials: "include",
       }).then((res) => res.json()),
   });
-  console.log(data)
+  console.log(data);
+
+  useEffect(() => {}, [data]);
 
   return (
     <div className="chatPage">
@@ -38,14 +42,14 @@ const ChatPage = () => {
                       lqip={{ active: true, quality: 20 }}
                     />
                   )}
-                  
+
                   <div
                     className={
                       message.role === "user" ? "message user" : "message"
                     }
                     key={i}
-                  > 
-                    <>{message.parts[0].text}</>
+                  >
+                    <Markdown>{message.parts[0].text}</Markdown>
                   </div>
                 </>
               ))}

@@ -3,7 +3,7 @@ import './chatList.css'
 import { useQuery } from 'react-query'
 
 const ChatList = () => {
-  const { isLoading, error, data } = useQuery('repoData', () =>
+  const { isLoading, error, data } = useQuery('userChats', () =>
     fetch(`${import.meta.env.VITE_API_URL}/api/userChat`,{
       credentials: 'include',
     }).then(res =>
@@ -12,6 +12,8 @@ const ChatList = () => {
   )
 
   if (error) return 'An error has occurred: ' + error.message
+
+  console.log(data)
 
   return (
     <div className='chatList'>
@@ -23,7 +25,7 @@ const ChatList = () => {
         <span className='title'>Recent Chats</span>
         <div className="list">
            {isLoading ? "Loading..." : error ? "Something went wrong" :data?.map((chat)=>(
-            <Link key={chat._id} to={`/dashboard/chat/${chat._id}`}>
+            <Link key={chat._id} to={`/dashboard/chats/${chat._id}`}>
                 <span>{chat.title}</span>
             </Link>
            ))}
